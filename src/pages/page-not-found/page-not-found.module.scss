@@ -1,0 +1,27 @@
+.not-found-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.errors-wrapper {
+  text-align: center;
+}
+
+.error-404 {
+  font-size: 10rem;
+
+  @media screen and (max-width: 415px) {
+    font-size: 7rem;
+  }
+}
+
+.error-text {
+  font-size: 3rem;
+
+  @media screen and (max-width: 415px) {
+    font-size: 2rem;
+  }
+}
+

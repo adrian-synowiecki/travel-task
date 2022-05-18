@@ -1,20 +1,20 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
+import axiosInstance from "api/axios-instance";
 import {
   addStartingPointCoordinates,
   addDestinationPointCoordinates,
   addStartingCity,
   addDestinationCity,
-} from "../../features/coordinatesSlice";
-import { RootState } from "../../store";
-import { TravelPoint } from "../../TravelPoint";
+} from "features/coordinatesSlice";
+import { RootState } from "store";
+import { TravelPoint } from "TravelPoint";
 
 import styles from "./home.module.scss";
 
@@ -36,12 +36,11 @@ const Home = () => {
     (state: RootState) => state.coordinates.destinationPointCoordinates
   );
   const dispatch = useDispatch();
-
   useEffect(() => {
     const checkServiceAvailability = async () => {
       try {
-        await axios.get(
-          `https://api.geoapify.com/v1/geocode/autocomplete?text=Warszawa&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
+        await axiosInstance.get(
+          `/geocode/autocomplete?text=Warszawa&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
         );
       } catch (err) {
         const error = err as { response: { status: number } };
@@ -63,8 +62,8 @@ const Home = () => {
   useEffect(() => {
     if (startingPointValue !== "" && !serviceUnavailableError) {
       const fetchStartingPointCoordinates = async () => {
-        const response = await axios.get(
-          `https://api.geoapify.com/v1/geocode/autocomplete?text=${startingPointValue}&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
+        const response = await axiosInstance.get(
+          `/geocode/autocomplete?text=${startingPointValue}&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
         );
         const transformedListOfStartingPoints = response.data.results.map(
           (point: TravelPoint) => ({
@@ -84,8 +83,8 @@ const Home = () => {
   useEffect(() => {
     if (destinationPointValue !== "" && !serviceUnavailableError) {
       const fetchDestinationPointCoordinates = async () => {
-        const response = await axios.get(
-          `https://api.geoapify.com/v1/geocode/autocomplete?text=${destinationPointValue}&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
+        const response = await axiosInstance.get(
+          `/geocode/autocomplete?text=${destinationPointValue}&format=json&apiKey=${process.env.REACT_APP_API_KEY}`
         );
         const transformedListOfDestinationPoints = response.data.results.map(
           (point: TravelPoint) => ({
@@ -113,14 +112,16 @@ const Home = () => {
     }
   };
 
-  const handleStartingPointChoosing = (value) => {
-    dispatch(addStartingPointCoordinates([value.lat, value.lon]))
-    dispatch(addStartingCity(value.city));
+  // value has to be any until materiaul ui fixes it types
+  const handleStartingPointChoosing = (value: any) => {
+    dispatch(addStartingPointCoordinates([value.lat, value.lon]));
+    dispatch(addStartingCity(value.label));
   };
 
-  const handleDestinationPointChoosing = (value) => {
-    dispatch(addDestinationPointCoordinates([value.lat, value.lon]))
-    dispatch(addDestinationCity(value.city));
+  // value has to be any until materiaul ui fixes it types
+  const handleDestinationPointChoosing = (value: any) => {
+    dispatch(addDestinationPointCoordinates([value.lat, value.lon]));
+    dispatch(addDestinationCity(value.label));
   };
 
   return (
@@ -144,7 +145,7 @@ const Home = () => {
               freeSolo={true}
               id="combo-box-demo"
               options={listOfStartingPoints}
-              onChange={handleStartingPointChoosing}
+              onChange={(event, value) => handleStartingPointChoosing(value)}
               sx={{ width: 500 }}
               renderInput={(params) => (
                 <TextField
@@ -164,7 +165,7 @@ const Home = () => {
               freeSolo={true}
               id="combo-box-demo"
               options={listOfDestinationPoints}
-              onChange={handleDestinationPointChoosing}
+              onChange={(event, value) => handleDestinationPointChoosing(value)}
               sx={{ width: 500 }}
               renderInput={(params) => (
                 <TextField

@@ -1,69 +1,112 @@
-// import {
-//   MapContainer,
-//   Marker,
-//   Popup,
-//   TileLayer,
-//   Polyline,
-// } from "react-leaflet";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../store";
-
-// const TravelDetails = () => {
-//   const startingPointCoordinates = useSelector(
-//     (state: RootState) => state.coordinates.startingPointCoordinates
-//   );
-//   const destinationPointCoordinates = useSelector(
-//     (state: RootState) => state.coordinates.destinationPointCoordinates
-//   );
-//   const polyline = [startingPointCoordinates, destinationPointCoordinates];
-//   console.log(startingPointCoordinates, destinationPointCoordinates);
-//   const fillBlueOptions = { fillColor: "blue" };
-//   return (
-//     <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
-//       <TileLayer
-//         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//       />
-//   <Marker position={[51.505, -0.09]}>
-//     <Popup>
-//       A pretty CSS3 popup. <br /> Easily customizable.
-//     </Popup>
-//   </Marker>
-//       <Polyline
-//         pathOptions={fillBlueOptions}
-//         positions={[
-//           [53.9653947, 14.7728556],
-//           [52.2337172, 21.071432235636493],
-//         ]}
-//       />
-//     </MapContainer>
-//   );
-// };
-
-// export default TravelDetails;
-
-// import React, { Component } from "react";
 import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
-import RoutingMachine from "../../hoc/routing-machine";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import TextField from "@mui/material/TextField";
+import RoutingMachine from "hoc/routing-machine";
+import { RootState } from "store";
+import haversine from "haversine-distance";
+import { addDistance } from "features/coordinatesSlice";
+import {
+  calculateTravelCost,
+  calculateTravelTime,
+} from "features/travelDetailsSlice";
+
+import styles from "./travel-details.module.scss";
 
 const TravelDetails = () => {
-  // const position = [this.state.lat, this.state.lng];
-  //   const [map, setMap] = useState(false);
+  const [costPerKilometer, setCostPerKilometer] = useState("");
+  const startingPointCoordinates = useSelector(
+    (state: RootState) => state.coordinates.startingPointCoordinates
+  );
+  const destinationPointCoordinates = useSelector(
+    (state: RootState) => state.coordinates.destinationPointCoordinates
+  );
 
-  // center={[51.505, -0.09]}
+  const startingCity = useSelector(
+    (state: RootState) => state.coordinates.startingCity
+  );
+
+  const destinationCity = useSelector(
+    (state: RootState) => state.coordinates.destinationCity
+  );
+  const distance = useSelector(
+    (state: RootState) => state.coordinates.distance
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const startingPoint = {
+      latitude: startingPointCoordinates[0],
+      longitude: startingPointCoordinates[1],
+    };
+    const destinationPoint = {
+      latitude: destinationPointCoordinates[0],
+      longitude: destinationPointCoordinates[1],
+    };
+
+    const distance = haversine(startingPoint, destinationPoint);
+    const kilometer = 1000
+    const distanceFromMetersToKm = distance / kilometer;
+
+    dispatch(addDistance(distanceFromMetersToKm));
+  }, [destinationPointCoordinates, startingPointCoordinates, dispatch]);
+
+  useEffect(() => {
+    if (Number(costPerKilometer) !== 0 || costPerKilometer !== "") {
+      dispatch(
+        calculateTravelCost({
+          costPerKilometer: Number(costPerKilometer),
+          distance,
+        })
+      );
+    }
+  }, [costPerKilometer, distance, dispatch]);
+
+  useEffect(() => {
+    if (distance) {
+      dispatch(calculateTravelTime(distance));
+    }
+  }, [dispatch, distance]);
+
   return (
-    <MapContainer zoom={13}>
-      <TileLayer
-        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+    <div style={{ marginTop: "25px" }}>
+      <TextField
+        className={styles["cost-per-kilometer"]}
+        id="outlined-number"
+        label="Enter the cost of a kilometer"
+        type="number"
+        variant="outlined"
+        onChange={(e) => {
+          setCostPerKilometer(e.target.value);
+        }}
+        InputProps={{
+          inputProps: { min: 0 },
+        }}
       />
-      <Marker position={[53.9653947, 14.7728556]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker>
-      <RoutingMachine />
-    </MapContainer>
+
+      <MapContainer zoom={13} scrollWheelZoom={true}>
+        <TileLayer
+          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+        />
+        <Marker
+          position={[startingPointCoordinates[0], startingPointCoordinates[1]]}
+        >
+          <Popup>{startingCity}</Popup>
+        </Marker>
+        <Marker
+          position={[
+            destinationPointCoordinates[0],
+            destinationPointCoordinates[1],
+          ]}
+        >
+          <Popup>{destinationCity}</Popup>
+        </Marker>
+
+        <RoutingMachine />
+      </MapContainer>
+    </div>
   );
 };
 

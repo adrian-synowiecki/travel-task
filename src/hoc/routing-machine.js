@@ -1,24 +1,16 @@
-// import { MapLayer } from "react-leaflet";
-// import L from "leaflet";
-// import "leaflet-routing-machine";
-// import { withLeaflet } from "react-leaflet";
-
-// class Routing extends MapLayer {
-//   createLeafletElement() {
-//     let leafletElement = L.Routing.control({
-//       waypoints: [L.latLng(53.9653947,14.7728556), L.latLng(52.2337172, 21.071432235636493)],
-//     })
-//     return leafletElement.getPlan();
-//   }
-// }
-// export default withLeaflet(Routing);
-
 import { useEffect } from "react";
 import "leaflet-routing-machine";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
+import { useSelector } from "react-redux";
 
 const RoutingMachine = () => {
+  const startingPointCoordinates = useSelector(
+    (state) => state.coordinates.startingPointCoordinates
+  );
+  const destinationPointCoordinates = useSelector(
+    (state) => state.coordinates.destinationPointCoordinates
+  );
   const map = useMap();
 
   useEffect(() => {
@@ -29,14 +21,17 @@ const RoutingMachine = () => {
         return null;
       },
       waypoints: [
-        L.latLng(53.9653947, 14.7728556),
-        L.latLng(52.2337172, 21.071432235636493),
+        L.latLng(startingPointCoordinates[0], startingPointCoordinates[1]),
+        L.latLng(
+          destinationPointCoordinates[0],
+          destinationPointCoordinates[1]
+        ),
       ],
       routeWhileDragging: true,
     }).addTo(map);
 
     return () => map.removeControl(routingControl);
-  }, [map]);
+  }, [map, startingPointCoordinates, destinationPointCoordinates]);
 
   return null;
 };

@@ -5,6 +5,7 @@ export interface CoordinatesState {
   destinationPointCoordinates: number[];
   startingCity: string;
   destinationCity: string;
+  distance: number;
 }
 
 const initialState: CoordinatesState = {
@@ -12,6 +13,7 @@ const initialState: CoordinatesState = {
   destinationPointCoordinates: [],
   startingCity: "",
   destinationCity: "",
+  distance: 0,
 };
 
 export const coordinatesSlice = createSlice({
@@ -33,6 +35,13 @@ export const coordinatesSlice = createSlice({
     addDestinationCity: (state, action: PayloadAction<string>) => {
       state.destinationCity = action.payload;
     },
+    addDistance: (state, action: PayloadAction<number>) => {
+      state.distance = action.payload;
+    },
+    calculateTripCost: (
+      state,
+      action: PayloadAction<{ kmCost: number; distance: number }>
+    ) => {},
   },
 });
 
@@ -41,6 +50,8 @@ export const {
   addDestinationPointCoordinates,
   addStartingCity,
   addDestinationCity,
+  addDistance,
+  calculateTripCost,
 } = coordinatesSlice.actions;
 
 export default coordinatesSlice.reducer;
