@@ -3,7 +3,7 @@ const calculateTravelCostHelper = (
   distance: number
 ) => {
   const totalCostMultiplier = 1.1;
-  const totalCost = distance * costPerKilometer * totalCostMultiplier;
+  const totalCost = (distance * costPerKilometer) * totalCostMultiplier;
   return totalCost;
 };
 

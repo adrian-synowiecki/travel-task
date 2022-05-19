@@ -1,7 +1,7 @@
 import TravelSummary from "./travel-summary";
 import { render, screen } from "test-utils";
 
-describe("<Home/>", () => {
+describe("<TravelSummary/>", () => {
   const setup = () => {
     return render(<TravelSummary />, {
       preloadedState: {

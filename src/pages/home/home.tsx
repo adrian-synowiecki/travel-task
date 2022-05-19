@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import { AppBar, Drawer, Toolbar, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -24,7 +25,6 @@ import { RootState } from "redux-setup/store";
 import { TravelPoint } from "TravelPoint";
 
 import styles from "./home.module.scss";
-import { Drawer } from "@mui/material";
 
 const Home = () => {
   let navigate = useNavigate();
@@ -152,102 +152,122 @@ const Home = () => {
   }));
 
   return (
-    <div className={styles["home-container"]}>
-      <Drawer
-        sx={{
-          width: "300px",
-          flexShrink: 0,
-          backgroundColor: "#f0f1f2",
-          "& .MuiDrawer-paper": {
+    <div>
+      <Box className={styles["box"]} sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Link to="/">
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Home
+              </Typography>
+            </Link>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <div className={styles["home-wrapper"]}>
+        <Drawer
+          sx={{
             width: "300px",
+            flexShrink: 0,
             backgroundColor: "#f0f1f2",
-          },
-        }}
-        variant="permanent"
-        anchor="left"
-      >
-        <Box sx={{ width: "100%" }}>
-          <Stack spacing={2}>
-            {recentTravelSearches.length > 0 ? (
-              <>
+            zIndex: 0,
+            marginTop: '200px',
+            "& .MuiDrawer-paper": {
+              marginTop:'64px',
+              width: "300px",
+              backgroundColor: "#f0f1f2",
+            },
+          }}
+          variant="permanent"
+          anchor="left"
+        >
+          <Box sx={{ width: "100%" }}>
+            <Stack spacing={2}>
+              {recentTravelSearches.length > 0 ? (
+                <>
+                  <p className={styles["previous-searched-travels-text"]}>
+                    Your previous searched travels:
+                  </p>
+                  {recentTravelSearches.map((trip) => (
+                    <>
+                      <Item>From: {trip.startingCity}</Item>
+                      <Item>To: {trip.destinationCity}</Item>
+                    </>
+                  ))}
+                </>
+              ) : (
                 <p className={styles["previous-searched-travels-text"]}>
                   Your previous searched travels:
                 </p>
-                {recentTravelSearches.map((trip) => (
-                  <>
-                    <Item>From: {trip.startingCity}</Item>
-                    <Item>To: {trip.destinationCity}</Item>
-                  </>
-                ))}
-              </>
-            ) : (
-              <p className={styles["previous-searched-travels-text"]}>
-                Your previous searched travels:
-              </p>
-            )}
-          </Stack>
-        </Box>
-      </Drawer>
+              )}
+            </Stack>
+          </Box>
+        </Drawer>
 
-      <div className={styles["flex-wrapper"]}>
-        {invalidPlaceNameError && !serviceUnavailableError && (
-          <Alert severity="error" style={{ marginRight: "100px" }}>
-            {invalidPlaceNameError}
-          </Alert>
-        )}
-        {serviceUnavailableError && (
-          <Alert severity="error" style={{ marginRight: "100px" }}>
-            {serviceUnavailableError}
-          </Alert>
-        )}
-        <div className={styles["autocomplete-wrapper"]}>
-          <div className={styles["starting-point"]}>
-            <Autocomplete
-              disablePortal
-              className={styles["autocomplete"]}
-              freeSolo={true}
-              id="combo-box-demo"
-              options={listOfStartingPoints}
-              onChange={(event, value) => handleStartingPointChoosing(value)}
-              sx={{ width: 500 }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={(event) =>
-                    setStartingPointValue(event.target.value)
-                  }
-                  {...params}
-                  label="Choose a starting point"
-                />
-              )}
-            />
+        <div className={styles["flex-wrapper"]}>
+          {invalidPlaceNameError && !serviceUnavailableError && (
+            <Alert severity="error" style={{ marginRight: "100px" }}>
+              {invalidPlaceNameError}
+            </Alert>
+          )}
+          {serviceUnavailableError && (
+            <Alert severity="error" style={{ marginRight: "100px" }}>
+              {serviceUnavailableError}
+            </Alert>
+          )}
+          <div className={styles["autocomplete-wrapper"]}>
+            <div className={styles["starting-point"]}>
+              <Autocomplete
+                disablePortal
+                className={styles["autocomplete"]}
+                freeSolo={true}
+                id="combo-box-demo"
+                options={listOfStartingPoints}
+                onChange={(event, value) => handleStartingPointChoosing(value)}
+                sx={{ width: 500 }}
+                renderInput={(params) => (
+                  <TextField
+                    onChange={(event) =>
+                      setStartingPointValue(event.target.value)
+                    }
+                    {...params}
+                    label="Choose a starting point"
+                  />
+                )}
+              />
+            </div>
+            <div className={styles["destination-point"]}>
+              <Autocomplete
+                disablePortal
+                className={styles["autocomplete"]}
+                freeSolo={true}
+                id="combo-box-demo"
+                options={listOfDestinationPoints}
+                onChange={(event, value) =>
+                  handleDestinationPointChoosing(value)
+                }
+                sx={{ width: 500 }}
+                renderInput={(params) => (
+                  <TextField
+                    onChange={(event) =>
+                      setDestinationPointValue(event.target.value)
+                    }
+                    {...params}
+                    label="Choose a destination point"
+                  />
+                )}
+              />
+            </div>
+            <Button
+              variant="contained"
+              disabled={
+                startingPointValue === "" || destinationPointValue === ""
+              }
+              onClick={handleTravelSearching}
+            >
+              Search
+            </Button>
           </div>
-          <div className={styles["destination-point"]}>
-            <Autocomplete
-              disablePortal
-              className={styles["autocomplete"]}
-              freeSolo={true}
-              id="combo-box-demo"
-              options={listOfDestinationPoints}
-              onChange={(event, value) => handleDestinationPointChoosing(value)}
-              sx={{ width: 500 }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={(event) =>
-                    setDestinationPointValue(event.target.value)
-                  }
-                  {...params}
-                  label="Choose a destination point"
-                />
-              )}
-            />
-          </div>
-          <Button
-            variant="contained"
-            disabled={startingPointValue === "" || destinationPointValue === ""}
-            onClick={handleTravelSearching}
-          >
-            Search
-          </Button>
         </div>
       </div>
     </div>

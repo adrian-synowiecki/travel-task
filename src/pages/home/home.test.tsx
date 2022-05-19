@@ -1,18 +1,9 @@
-import { render, screen } from "@testing-library/react";
 import Home from "./home";
-import { store } from "redux-setup/store";
-import { MemoryRouter } from "react-router-dom";
-import { Provider } from "react-redux";
+import { render, screen } from "test-utils";
 
 describe("<Home/>", () => {
   const setup = () => {
-    return render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Home />
-        </MemoryRouter>
-      </Provider>
-    );
+    return render(<Home />);
   };
 
   it("should display starting point input", () => {
