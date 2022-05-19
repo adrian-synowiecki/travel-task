@@ -38,10 +38,6 @@ export const coordinatesSlice = createSlice({
     addDistance: (state, action: PayloadAction<number>) => {
       state.distance = action.payload;
     },
-    calculateTripCost: (
-      state,
-      action: PayloadAction<{ kmCost: number; distance: number }>
-    ) => {},
   },
 });
 
@@ -51,7 +47,6 @@ export const {
   addStartingCity,
   addDestinationCity,
   addDistance,
-  calculateTripCost,
 } = coordinatesSlice.actions;
 
 export default coordinatesSlice.reducer;

@@ -1,7 +1,5 @@
-// test-utils.jsx
 import React from "react";
 import { render as rtlRender } from "@testing-library/react";
-// import { configureStore } from "store";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
