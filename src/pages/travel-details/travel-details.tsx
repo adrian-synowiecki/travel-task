@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-import RoutingMachine from "hoc/routing-machine";
+import RoutingMachine from "components/routing-machine";
 import { RootState } from "redux-setup/store";
 import haversine from "haversine-distance";
 import { addDistance } from "features/coordinatesSlice";
