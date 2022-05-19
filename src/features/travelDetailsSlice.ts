@@ -5,11 +5,16 @@ import calculateTravelTimeHelper from "utils/calculateTravelTimeHelper";
 export interface TravelDetailsState {
   travelCost: number;
   travelTime: number;
+  recentTravelSearches: {
+    startingCity: string;
+    destinationCity: string;
+  }[];
 }
 
 const initialState: TravelDetailsState = {
   travelCost: 0,
   travelTime: 0,
+  recentTravelSearches: [],
 };
 
 export const travelDetailsSlice = createSlice({
@@ -26,11 +31,21 @@ export const travelDetailsSlice = createSlice({
       );
     },
     calculateTravelTime: (state, action: PayloadAction<number>) => {
-        state.travelTime =  calculateTravelTimeHelper(action.payload)
+      state.travelTime = calculateTravelTimeHelper(action.payload);
+    },
+    addRecentTravelSearches: (
+      state,
+      action: PayloadAction<{
+        startingCity: string;
+        destinationCity: string;
+      }>
+    ) => {
+      state.recentTravelSearches.push(action.payload);
     },
   },
 });
 
-export const { calculateTravelCost, calculateTravelTime } = travelDetailsSlice.actions;
+export const { calculateTravelCost, calculateTravelTime, addRecentTravelSearches } =
+  travelDetailsSlice.actions;
 
 export default travelDetailsSlice.reducer;

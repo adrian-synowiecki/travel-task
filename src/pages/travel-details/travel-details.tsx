@@ -2,7 +2,11 @@ import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+
 import RoutingMachine from "hoc/routing-machine";
 import { RootState } from "store";
 import haversine from "haversine-distance";
@@ -16,6 +20,7 @@ import styles from "./travel-details.module.scss";
 
 const TravelDetails = () => {
   const [costPerKilometer, setCostPerKilometer] = useState("");
+  const navigate = useNavigate();
   const startingPointCoordinates = useSelector(
     (state: RootState) => state.coordinates.startingPointCoordinates
   );
@@ -46,7 +51,7 @@ const TravelDetails = () => {
     };
 
     const distance = haversine(startingPoint, destinationPoint);
-    const kilometer = 1000
+    const kilometer = 1000;
     const distanceFromMetersToKm = distance / kilometer;
 
     dispatch(addDistance(distanceFromMetersToKm));
@@ -69,6 +74,9 @@ const TravelDetails = () => {
     }
   }, [dispatch, distance]);
 
+  const handleGenerateSummary = () => {
+    navigate("/travel-summary");
+  };
   return (
     <div style={{ marginTop: "25px" }}>
       <TextField
@@ -84,7 +92,14 @@ const TravelDetails = () => {
           inputProps: { min: 0 },
         }}
       />
-
+      <Button
+        disabled={Number(costPerKilometer) === 0 || costPerKilometer === ""}
+        className={styles["generate-travel-summary"]}
+        onClick={handleGenerateSummary}
+        variant="contained"
+      >
+        Generate a summary
+      </Button>
       <MapContainer zoom={13} scrollWheelZoom={true}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

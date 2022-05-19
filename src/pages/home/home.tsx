@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 
 import axiosInstance from "api/axios-instance";
 import {
@@ -13,10 +18,13 @@ import {
   addStartingCity,
   addDestinationCity,
 } from "features/coordinatesSlice";
+import { addRecentTravelSearches } from "features/travelDetailsSlice";
+
 import { RootState } from "store";
 import { TravelPoint } from "TravelPoint";
 
 import styles from "./home.module.scss";
+import { Drawer } from "@mui/material";
 
 const Home = () => {
   let navigate = useNavigate();
@@ -34,6 +42,16 @@ const Home = () => {
   );
   const destinationPointCoordinates = useSelector(
     (state: RootState) => state.coordinates.destinationPointCoordinates
+  );
+  const startingCity = useSelector(
+    (state: RootState) => state.coordinates.startingCity
+  );
+
+  const destinationCity = useSelector(
+    (state: RootState) => state.coordinates.destinationCity
+  );
+  const recentTravelSearches = useSelector(
+    (state: RootState) => state.travelDetails.recentTravelSearches
   );
   const dispatch = useDispatch();
   useEffect(() => {
@@ -109,6 +127,7 @@ const Home = () => {
       setInvalidPlaceNameError("Invalid place name, please try another one.");
     } else {
       navigate("/travel-details");
+      dispatch(addRecentTravelSearches({ startingCity, destinationCity }));
     }
   };
 
@@ -124,8 +143,52 @@ const Home = () => {
     dispatch(addDestinationCity(value.label));
   };
 
+  const Item = styled(Paper)(() => ({
+    backgroundColor: "#f0f1f2",
+    padding: "15px",
+    textAlign: "center",
+    color: "#1A2027",
+    fontWeight: "200",
+  }));
+
   return (
     <div className={styles["home-container"]}>
+      <Drawer
+        sx={{
+          width: "300px",
+          flexShrink: 0,
+          backgroundColor: "#f0f1f2",
+          "& .MuiDrawer-paper": {
+            width: "300px",
+            backgroundColor: "#f0f1f2",
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Box sx={{ width: "100%" }}>
+          <Stack spacing={2}>
+            {recentTravelSearches.length > 0 ? (
+              <>
+                <p className={styles["previous-searched-travels-text"]}>
+                  Your previous searched travels:
+                </p>
+                {recentTravelSearches.map((trip) => (
+                  <>
+                    <Item>From: {trip.startingCity}</Item>
+                    <Item>To: {trip.destinationCity}</Item>
+                  </>
+                ))}
+              </>
+            ) : (
+              <p className={styles["previous-searched-travels-text"]}>
+                Your previous searched travels:
+              </p>
+            )}
+          </Stack>
+        </Box>
+      </Drawer>
+
       <div className={styles["flex-wrapper"]}>
         {invalidPlaceNameError && !serviceUnavailableError && (
           <Alert severity="error" style={{ marginRight: "100px" }}>

@@ -30,3 +30,8 @@ ul {
   width: 25vw;
   overflow-y: scroll;
 }
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

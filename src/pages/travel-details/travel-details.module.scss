@@ -10,3 +10,12 @@
 }
 
 
+.generate-travel-summary {
+  position: absolute;
+  z-index: 99999;
+  position: absolute;
+  // top: 50%;
+  left: 50%;
+  // margin-top: 80px;
+  transform: translateY(20%);
+}
