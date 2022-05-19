@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import RoutingMachine from "hoc/routing-machine";
-import { RootState } from "store";
+import { RootState } from "redux-setup/store";
 import haversine from "haversine-distance";
 import { addDistance } from "features/coordinatesSlice";
 import {

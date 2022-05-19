@@ -20,7 +20,7 @@ import {
 } from "features/coordinatesSlice";
 import { addRecentTravelSearches } from "features/travelDetailsSlice";
 
-import { RootState } from "store";
+import { RootState } from "redux-setup/store";
 import { TravelPoint } from "TravelPoint";
 
 import styles from "./home.module.scss";

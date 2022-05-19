@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Home from "./home";
-import { store } from "store";
+import { store } from "redux-setup/store";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 

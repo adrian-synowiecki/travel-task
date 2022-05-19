@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 
 import { useSelector } from "react-redux";
-import { RootState } from "store";
+import { RootState } from "redux-setup/store";
 import { AppBar, Toolbar, Typography } from "@mui/material";
 
 const Item = styled(Paper)(() => ({
@@ -95,7 +95,7 @@ const TravelSummary = () => {
             onClick={exportPDFWithComponent}
             variant="contained"
           >
-            Export a report to PDF
+            EXPORT A REPORT TO PDF
           </Button>
         </div>
       </div>
