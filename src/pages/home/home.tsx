@@ -172,9 +172,8 @@ const Home = () => {
             backgroundColor: "#f0f1f2",
             zIndex: 0,
             height: "100vh",
-            // marginTop: '200px',
             "& .MuiDrawer-paper": {
-              marginTop:'67px',
+              marginTop: "67px",
               width: "300px",
               height: "100vh",
               backgroundColor: "#f0f1f2",
@@ -263,7 +262,9 @@ const Home = () => {
             <Button
               variant="contained"
               disabled={
-                startingPointValue === "" || destinationPointValue === ""
+                !!serviceUnavailableError ||
+                startingPointValue === "" ||
+                destinationPointValue === ""
               }
               onClick={handleTravelSearching}
             >
