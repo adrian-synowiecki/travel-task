@@ -14,7 +14,6 @@ const App = () => {
         <Route path="/travel-summary" element={<TravelSummary />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <p>j</p>
     </div>
   );
 };
