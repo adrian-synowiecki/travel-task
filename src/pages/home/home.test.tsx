@@ -8,11 +8,14 @@ describe("<Home/>", () => {
 
   it("should display starting point input", () => {
     setup();
-    screen.getByLabelText("Choose a starting point");
+    expect(
+      screen.getByLabelText("Choose a starting point")
+    ).toBeInTheDocument();
   });
   it("should display destination point input", () => {
     setup();
-
-    screen.getByLabelText("Choose a destination point");
+    expect(
+      screen.getByLabelText("Choose a destination point")
+    ).toBeInTheDocument();
   });
 });
